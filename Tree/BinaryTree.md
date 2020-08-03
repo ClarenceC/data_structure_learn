@@ -57,7 +57,7 @@ function insert(data) {
 
 // 中序遍历
 function inOrder(node) {
-  if (!(node == null)) {
+  if (node !== null) {
     inOrder(node.left)
     console.log(node.show() + '')
     inOrder(node.right)
@@ -70,11 +70,8 @@ function BST() { // 建立二叉查找树模型
   this.inOrder = inOrder 
 }
 ```
-`inOrder()` 方法访问路径图
 
-![](./images/WX20200801-215127@2x.png)
-
-测试 `inOrder` 中序访问
+测试 `inOrder` 中序遍历
 
 ```js
 var nums = new BST()
@@ -86,16 +83,134 @@ nums.insert(3)
 nums.insert(99)
 nums.insert(22)
 console.log('Inorder traversal: ')
-inOrder(nums.root)
+inOrder(nums.root) // 3 16 22 23 37 45 99
 ```
+
+**inOrder** 中序遍历会从最小的左节点开始遍历
 
 先序遍历：
 ```js
 function preOrder(node) {
-  if (!(node == null)) {
+  if (node !== null) {
     console.log(node.show() + ' ')
     preOrder(node.left)
     preOrder(node.right)
+  }
+}
+
+var nums = new BST()
+nums.insert(23)
+nums.insert(45)
+nums.insert(16)
+nums.insert(37)
+nums.insert(3)
+nums.insert(99)
+nums.insert(22)
+console.log('Inorder traversal: ')
+preOrder(nums.root) // 23 16 3 22 45 37 99
+```
+
+先序遍历, 会先从根节点遍历后再跟下最小值节点节排列。
+
+后序遍历：
+
+```js
+function postOrder(node) {
+  if (node !== null) {
+    postOrder(node.left)
+    postOrder(node.right)
+    console.log(node.show() + ' ')
+  }
+}
+var nums = new BST()
+nums.insert(23)
+nums.insert(45)
+nums.insert(16)
+nums.insert(37)
+nums.insert(3)
+nums.insert(99)
+nums.insert(22)
+console.log('Inorder traversal: ')
+postOrder(nums.root) // 3 22 16 37 99 45 23
+```
+
+后序遍历，从孙节点先把最小值和最大值遍历后，再遍历根节点。
+
+下面是操作视意图：
+![](./images/WX20200802-124102@2x.png)
+
+### 二叉树上进行查找
+
+查找最小值
+```js
+function getMin() {
+  var current = this.root
+  while(current.left !== null) {
+    current = current.left // 获取树节点最左孙节点的值
+  }
+  return current.data
+}
+```
+
+查找最大值
+```js
+function getMax() {
+  var current = this.root
+  while(current.right !== null) {
+    current = current.right // 获取树节点最右子孙节点的值
+  }
+  return current.data
+}
+```
+
+查找给定的值
+
+```js
+function find(data) {
+  var current = this.root
+  while(current !== null) {
+    if (current.data == data) {
+      return current
+    } else if (data < current.data){
+      current = current.left
+    } else {
+      current = current.right
+    }
+  }
+  return null
+}
+```
+
+### 二叉树上删除节点
+
+```js
+function remove(data) {
+  root = removeNode(this.root, data)
+}
+
+function removeNode(node, data) {
+  if (node == null) {
+    return null
+  }
+  if (data == node.data) {
+    if (node.left == null && node.right == null) {
+      return null
+    }
+    if (node.left == null) {
+      return node.right
+    }
+    if (node.right == null) {
+      return node.left
+    }
+    var tempNode = getSmallest(node.right)
+    node.data = tempNode.data
+    node.right = removeNode(node.right, tempNode.data)
+  } else if (data < node.data) {
+    node.left = removeNode(node.left, data)
+    return node
+  } else {
+    node.right = removeNode(node.right, data)
+    return node
   }
 }
 ```
