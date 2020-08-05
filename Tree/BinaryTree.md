@@ -202,6 +202,17 @@ function removeNode(node, data) {
     if (node.right == null) {
       return node.left
     }
+    var getSmallest = function(node) {
+      if (node.left == null && node.right == null) {
+        return node
+      }
+      if (node.left !== null) {
+        return node.left
+      }
+      if (node.right !== null) {
+        return getSmallest(node.right)
+      }
+    }
     var tempNode = getSmallest(node.right)
     node.data = tempNode.data
     node.right = removeNode(node.right, tempNode.data)
@@ -214,3 +225,42 @@ function removeNode(node, data) {
   }
 }
 ```
+
+### 二叉树计数的实现
+
+```js
+// 创建节点
+function Node(data, left, right) {
+  this.data = data
+  this.count = 1 // count 用来统计
+  this.left = left
+  this.right = right
+  this.show = show
+}
+
+// 更新统计数
+function update(data) {
+  var grade = this.find(data)
+  grade.count++
+  return grade
+}
+
+function prArray(arr) {
+  console.log(arr[0].toString() + ' ')
+  for (var i = 1; i < arr.length; ++i) {
+    console.log(arr[i].toString() + ' ')
+    if (i % 10 == 0) {
+      console.log('\n')
+    }
+  }
+}
+
+function genArray(length) {
+  var arr = []
+  for (var i = 0; i < length; ++i) {
+    arr[i] = Math.floor(Math.random() * 101)
+  }
+  return arr
+}
+```
+
