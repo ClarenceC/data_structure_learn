@@ -1,8 +1,10 @@
 ## 树
 
-树是计算机科学家中经常用到的数据结构。树是一种非线性的数据结构，以分层的方式来存储数据，树还滓用来存储有序列表。选择树而不是其它数据结构，是因为在二叉树上查找会非常快。添加删除元素也非常快。
+树是计算机科学家中经常用到的数据结构。树是一种非线性的数据结构，以分层的方式来存储数据，树还用来存储有序列表。选择树而不是其它数据结构，是因为在二叉树上查找会非常快。添加删除元素也非常快。
 
-树由一组以边连接的节点组成，根节点是最顶层。
+树由一组以边连接的节点组成，根节点是最顶层，每个节点都有一个父节点。
+
+- 根节点，根节点没有父节点，根节点下面可以有一个或多个子节点。
 
 ![](./images/WX20200801-172145@2x.png)
 
@@ -10,10 +12,11 @@
 
 二叉树是一种特殊的树，它的子节点个数不超过两个。在二叉树里面一个父节点下面会有两个节点，**左节点**和**右节点**。
 
-#### 二叉查找树
-在二叉查找树里面，通常会把较少的值放在左边，大的值放在右边。
+#### 二叉查找树(BST)
 
-#### 实现二叉查找树
+二叉搜索树(BST)是二叉树的一种，但是左侧节点存储比父节点小的值，右节点存储比父节点大的值。
+
+#### 实现二叉查找树(BinarySearchTree)
 
 ```js
 // 显示数据
@@ -261,5 +264,50 @@ function genArray(length) {
     arr[i] = Math.floor(Math.random() * 101)
   }
   return arr
+}
+```
+
+
+### BinarySearchTree ES6 实现
+
+```js
+class Node {
+  constructor(key) {
+    this.key = key
+    this.left = null
+    this.right = null
+  }
+}
+
+class BinarySearchTree {
+  constructor(compareFn = defaultCompare) {
+    this.compareFn = compareFn
+    this.root = null
+  }
+  // 插入节点
+  insertNode(node, key) {
+    if (this.compareFn(key, node.key) === Compare.LESS_THAN) { // 判断新的值是不是比当前 节点 node 值小，如果是插入到左右，不是插入到右边
+      if (node.left == null) { // 如果左节点不存在，放到左节点，已存在，放到左节点的下面
+        node.left = new Node(key)
+      } else {
+        this.insertNode(node.left, key)
+      }
+    } else {
+      if (node.right == null) {
+        node.right = new Node(key)
+      } else {
+        this.inserNode(node.right, key)
+      }
+    }
+  }
+  // 插入
+  insert(key) {
+    if (this.root == null) {
+      this.root = new Node(key)
+    } else {
+      this.insertNode(this.root, key)
+    }
+  }
+
 }
 ```
