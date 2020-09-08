@@ -12,11 +12,15 @@
 
 二叉树是一种特殊的树，它的子节点个数不超过两个。在二叉树里面一个父节点下面会有两个节点，**左节点**和**右节点**。
 
-#### 二叉查找树(BST)
+### 二叉查找树(BST)
 
 二叉搜索树(BST)是二叉树的一种，但是左侧节点存储比父节点小的值，右节点存储比父节点大的值。
 
-#### 实现二叉查找树(BinarySearchTree)
+### 树的遍历(二叉查找树搜索, BinarySearchTree)
+
+#### 中序遍历
+
+中序遍历是以上行顺序访问 BST, 也是从最小到最大的顺序访问所有节点，中序遍历的一种应用就是对树进行排序操作。
 
 ```js
 // 显示数据
@@ -43,7 +47,7 @@ function insert(data) {
       parent = current // 当前父节点给 parent
       if (data < current.data) { // 如果比当前节点值小放左边
         current = current.left
-        if (current == null)  { // 遍历到当前左节点为空，放入
+        if (current == null) { // 遍历到当前左节点为空，放入
           parent.left = n
           break
         }
@@ -91,7 +95,29 @@ inOrder(nums.root) // 3 16 22 23 37 45 99
 
 **inOrder** 中序遍历会从最小的左节点开始遍历
 
-先序遍历：
+
+#### ES6 中序遍历
+
+```js
+inOrderTraverse(callback) {
+  this.inOrderTraverseNode(this.root, callback)
+}
+
+inOrderTraverseNode(node, callback) {
+  if (node != null) {
+    this.inOrderTraverseNode(node.left, callback)
+    callback(node.key)
+    this.inOrderTraverseNode(node.right, callback)
+  }
+}
+```
+
+![](./images/WX20200907-100207@2x.png)
+
+#### 先序遍历
+
+先序遍历是以优先于遍历后代节点顺序访问每个节点的，先序遍历的一种应用是打印一个结构化的文档。
+
 ```js
 function preOrder(node) {
   if (node !== null) {
@@ -115,7 +141,27 @@ preOrder(nums.root) // 23 16 3 22 45 37 99
 
 先序遍历, 会先从根节点遍历后再跟下最小值节点节排列。
 
-后序遍历：
+
+#### ES6 先序遍历
+
+```js
+preOrderTraverse(callback) {
+  this.preOrderTraverseNode(this.root, callback)
+}
+
+preOrderTraverseNode(node, callback) {
+  if (node != null) {
+    callback(node.key)
+    this.preOrderTraverseNode(node.left, callback)
+    this.preOrderTraverseNode(node.right, callback)
+  }
+}
+```
+![](./images/WX20200907-100821@2x.png)
+
+#### 后序遍历
+
+后序遍历是先访问节点的后代节点，再访问节点本身，后序遍历的一种应用场景是计算一个目录及其子目录中所有文件所占空间的大小。
 
 ```js
 function postOrder(node) {
@@ -142,9 +188,28 @@ postOrder(nums.root) // 3 22 16 37 99 45 23
 下面是操作视意图：
 ![](./images/WX20200802-124102@2x.png)
 
-### 二叉树上进行查找
+#### ES6 后序遍历实现
+
+```js
+postOrderTraverse(callback) {
+  this.postOrderTraverseNode(this.root, callback)
+}
+
+postOrderTraverseNode(node, callback) {
+  if (node != null) {
+    this.postOrderTraverseNode(node.left, callback)
+    this.postOrderTraverseNode(node.right, callback)
+    callback(node.key)
+  }
+}
+```
+![](./images/WX20200907-101318@2x.png)
+
+
+### 搜索二叉树上的值
 
 查找最小值
+
 ```js
 function getMin() {
   var current = this.root
@@ -155,7 +220,24 @@ function getMin() {
 }
 ```
 
+ES6 实现
+
+```js
+min() {
+  return this.minNode(this.root)
+}
+
+minNode(node) {
+  let current = node
+  while(current != null && current.left != null) {
+    current = current.left
+  }
+  return current
+}
+```
+
 查找最大值
+
 ```js
 function getMax() {
   var current = this.root
@@ -166,7 +248,21 @@ function getMax() {
 }
 ```
 
-查找给定的值
+ES6 实现
+```js
+max() {
+  return this.maxNode(this.root)
+}
+maxNode(node) {
+  let current = node
+  while (current != null && current.right !=null) {
+    current = current.right
+  }
+  return current
+}
+```
+
+查找一个特定的值
 
 ```js
 function find(data) {
@@ -181,6 +277,26 @@ function find(data) {
     }
   }
   return null
+}
+```
+
+ES6 实现
+
+```js
+search(key) {
+  return this.searchNode(this.root, key)
+}
+searchNode(node, key) {
+  if (node == null) {
+    return false // 找不到返回 false
+  }
+  if (this.compareFn(key, node.key) === Compare.LESS_THAN) { // 二分查找法
+    return this.searchNode(node.left, key)
+  } else if (this.compareFn(key, node.key) === Compare.BIGGER_THAN) {
+    return this.searchNode(node.right, key)
+  } else {
+    return true // 找到就返回 true
+  }
 }
 ```
 
@@ -228,6 +344,43 @@ function removeNode(node, data) {
   }
 }
 ```
+
+ES6 删除节点实现
+
+```js
+removeNode(node, key) {
+  if (node == null) {
+    return null
+  }
+  if (this.compareFn(key, node.key) === Compare.LESS_THAN) { // 比当前值小，则交给左节点处理
+    node.left = this.removeNode(node.left, key)
+    return node
+  } else if (this.compareFn(key, node.key) === Compare.BIGGER_THAN) { // 比当前值大，则交给右节点处理
+    node.right = this.removeNode(node.right, key)
+    return node
+  } else {
+    if (node.left == null && node.right == null) { // 节点没有左右节点则移除当前节点
+      node = null
+      return node
+    }
+    if (node.left == null) { // 节点没有左节点的情况
+      node = node.right
+      return node
+    }
+    if (node.right == null) { // 节点没有右节点的情况
+      node = node.left
+      return node
+    }
+    // 当节点有两个子节点的时候
+    const aux = this.minNode(node.right) // 查该节点右边子树的最小节点
+    node.key = aux.key // 替换为右边子树该节点的值
+    node.right = this.removeNode(node.right, aux.key) // 再移除右边子树的最小节点
+    return node // 返回节点
+  }
+}
+```
+
+![](./images/WX20200908-102315@2x.png)
 
 ### 二叉树计数的实现
 
@@ -311,3 +464,6 @@ class BinarySearchTree {
 
 }
 ```
+
+
+- [* 谈谈别的，前、中、后序遍历的区别只有一点](https://leetcode-cn.com/problems/binary-tree-paths/solution/tu-jie-er-cha-shu-de-suo-you-lu-jing-by-xiao_ben_z/)
