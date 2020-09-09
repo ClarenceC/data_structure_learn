@@ -465,5 +465,56 @@ class BinarySearchTree {
 }
 ```
 
+### 自平衡树
+
+在二叉树(BST)里面会存在一个问题，树的节点添加顺序会，影响你的树的结构，可能树的一边会非常的深。这会在添加，移除，搜索某个节点时引起一些性能问题，而自平衡二叉搜索树则没有这问题。
+
+自平衡二叉树(Adelson-Velskii-Landi, AVL树)，意思是指树任何一个节点左右两侧子树的高度之差最多为1。
+
+```js
+const BalanceFactor = {
+  UNBALANCED_RIGHT: 1,
+  SLIGHTLY_UNBALANCED_RIGHT: 2,
+  BALANCED: 3,
+  SLIGHTLY_UNBALANCED_LEFT: 4,
+  UNBALANCED_LEFT: 5
+}
+class AVLTree extends BinarySearchTree {
+  constructor(compareFn = defaultCompare) {
+    super(compareFn)
+    this.compareFn = compareFn
+    this.root = null
+  }
+
+  // 获取节点深度
+  getNodeHeight(node) { 
+    if (node == null) {
+      return - 1
+    }
+    return Math.max(
+      this.getNodeHeight(node.left),
+      this.getNodeHeight(node.right)
+    ) + 1
+  }
+
+  getBalanceFactor(node) { // 判断是否平衡，那里不平衡
+    const heightDifference = this.getNodeHeight(node.left) - this.getNodeHeight(node.right)
+    switch (heightDifference) {
+      case -2:
+        return BalanceFactor.UNBALANCED_RIGHT
+      case -1:
+        return BalanceFactor.SLIGHTLY_UNBALANCED_RIGHT
+      case 1:
+        return BalanceFactor.SLIGHTLY_UNBALANCED_LEFT
+      case 2:
+        return BalanceFactor.UNBALANCED_LEFT
+      default:
+        return BalanceFactor.BALANCED
+    }
+  }
+}
+```
+
+
 
 - [* 谈谈别的，前、中、后序遍历的区别只有一点](https://leetcode-cn.com/problems/binary-tree-paths/solution/tu-jie-er-cha-shu-de-suo-you-lu-jing-by-xiao_ben_z/)
