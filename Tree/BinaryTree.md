@@ -515,6 +515,53 @@ class AVLTree extends BinarySearchTree {
 }
 ```
 
+### 平衡操作-AVL旋转
 
+- 左-左(LL): 向右的单旋转
+- 右-右(RR): 向左的单旋转
+- 左-右(LR): 向右的双旋转(先LL旋转，再RR旋转)
+- 右-左(RL): 向左的双旋转(先RR旋转，再LL旋转)
+
+LL 向右的单旋转
+```js
+rotationLL(node) {
+  const tmp = node.left // tmp 等于 X 节点
+  node.left = tmp.right // X 的右节点放到 Y 的左节点
+  tmp.right = node // Y 放到 X 的右节点
+  return tmp // 返回 X 节点
+}
+```
+![](./images/WX20200910-095322@2x.png)
+
+RR 向左的单旋转
+```js
+rotationRR(node) {
+  const tmp = node.right
+  node.right = tmp.left
+  tmp.left = node
+  return tmp
+}
+```
+![](./images/WX20200910-095528@2x.png)
+
+LR 向右的双旋转
+这种情况出现在左侧子节点的高度大于右侧子节点的高度，并且左侧子节点右侧较重。
+
+```js
+rotationLR(node) {
+  node.left = this.rotationRR(node.left)
+  return this.rotationLL(node)
+}
+```
+
+RL 向左的双旋转
+这种情况出现在右侧子节点的高度大于左侧子节点的高度，并且右侧子节点的左侧较重。
+
+```js
+rotationRL(node) {
+  node.right = this.rotationLL(node.right)
+  return this.rotationRR(node)
+}
+```
 
 - [* 谈谈别的，前、中、后序遍历的区别只有一点](https://leetcode-cn.com/problems/binary-tree-paths/solution/tu-jie-er-cha-shu-de-suo-you-lu-jing-by-xiao_ben_z/)
