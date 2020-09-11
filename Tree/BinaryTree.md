@@ -564,4 +564,45 @@ rotationRL(node) {
 }
 ```
 
+### AVL 插入节点
+
+AVL树和普通二叉树的插入节点是有区别的
+
+```js
+insert(key) {
+  this.root = this.insertNode(this.root, key)
+}
+
+insertNode(node, key) {
+  if (node == null) { // 为空的时候创建节点
+    return new Node(key)
+  } else if (this.compareFn(key, node.key) === Compare.LESS_THAN) { // 如果存在节点，并比当前节点小则放到左节点下面插入
+    node.left = this.insertNode(node.left, key)
+  } else if (this.compareFn(key, node.key) === Compare.BIGGER_THAN) { // 如果存在节点，并比当前节点大则放到右节点下面的插入
+    node.right = this.insertNode(node.right, key)
+  } else { // 如果相等就直接返回当前 node
+    return node
+  }
+
+  // 插入后需要，进行树平衡操作
+  const balanceFactor = this.getBalanceFactor(node)
+  if (balbanceFactor == BbalanceFactor.UNBALANCED_LEFT) {
+    if (this.compareFn(key, node.left.key) === Compare.LESS_THAN) {
+      node = this.rotationLL(node)
+    } else {
+      return this.rotationLR(node)
+    }
+  }
+  if (balanceFactor ===  BalanceFactor.UNBALANCED_RIGHT) {
+    if (this.compareFn(key, node.right.key) === Compare.BIGGER_THAN) {
+      node = this.rotationRR(node)
+    } else {
+      return this.rotationRL(node)
+    }
+  }
+  return node
+}
+```
+
+
 - [* 谈谈别的，前、中、后序遍历的区别只有一点](https://leetcode-cn.com/problems/binary-tree-paths/solution/tu-jie-er-cha-shu-de-suo-you-lu-jing-by-xiao_ben_z/)
