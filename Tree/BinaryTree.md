@@ -604,5 +604,96 @@ insertNode(node, key) {
 }
 ```
 
+### AVL 删除节点
+
+AVL树的删除节点 和 BST(BinarySearchTree)树基本一样，但是要注册删除节点后树是否还平衡
+```js
+removeNode(node, key) {
+  node = super.removeNode(node, key) // 调用 BST 的方法删除节点
+
+  if (node == null) { // node节点为空时，直接返回
+    return node
+  }
+
+  const balanceFactor = this.getBalanceFactor(node)
+  if (balanceFactor === BalanceFactor.UNBALANCED_LEFT) {
+    const balanceFactorLeft = this.getBalanceFactor(node.left)
+    if (balanceFactor === BalanceFactor.BALANCED || balanceFactorLeft === BalanceFactor.SLIGHTLY_UNBALANCED_LEFT) {
+      return this.rotationLL(node)
+    }
+    if (balanceFactorLeft === BalanceFactor.SLIGHTYLY_UNBALANCED_RIGHT) {
+      return this.rotationLR(node.left)
+    }
+  }
+  if (balanceFactor === BalanceFactor.UNBALANCED_RIGHT) {
+    const balanceFactorRight = this.getBalanceFactor(node.right)
+    if (
+      balanceFactorRight === BalanceFactor.BALANCED ||
+      balanceFactorRight === BalanceFactor.SLIGHTLY_UNBALANCED_RIGHT
+    ) {
+      return this.rotationRR(node)
+    }
+    if (balanceFactorRight === BalanceFactor.SLIGHTLY_UNBALANCED_LEFT) {
+      return this.rotationRL(node.right)
+    }
+  }
+  return node
+}
+```
+
+
+### 红黑树
+
+红黑树和AVL树一样，也是一个自平衡二叉搜索树。对于一个需要频繁操作插入和删除的和平衡树，红黑树比较好用，频率较低的 AVL 树比红黑树更好。
+
+- 红黑树的节点，不是红的就是黑的。
+- 树的根节点是黑的。
+- 所有叶节点都是黑的
+- 如果节点是红的，那它两个子节点都是黑的。
+- 不能有两个相邻的红节点，一个红节点不能有红和父节点或子节点
+- 从给定的节点到它的后代节点的所有路径包含相同数量的黑色节点
+
+```js
+class RedBlackTree extends BinarySearchTree {
+  constructor(compareFn = defaultCompare) {
+    super(compareFn)
+    this.compareFn = compareFn
+    this.root = null
+  }
+}
+
+class RedBBlackNode extends Node {
+  constructor(key) {
+    super(key)
+    this.key = key
+    this.color = Colors.RED
+    this.parent = null
+  }
+
+  isRed() {
+    return this.color === Colors.RED
+  }
+
+  insertNode(node, key) {
+    // 判断插入节点是否比节点值小
+    if (this.compareFn(key, node.key)  ===  Compare.LESS_THAN) {
+      if (node.left == null)  {
+        node.left = new RedBlackNode(key)
+        node.left.parent = node
+        return node.left
+      } else {
+        return this.insertNode(node.left, key)
+      }
+    } else if (node.right == null) { // 如果右节点为空，则直接插入右节点
+      node.right = new RedBlackNode(key)
+      node.right.parent = node
+      return node.right
+    } else {
+      return  this.insertNode(node.right, key) // 否则插入右节点下面的节点里面
+    }
+  }
+}
+```
+
 
 - [* 谈谈别的，前、中、后序遍历的区别只有一点](https://leetcode-cn.com/problems/binary-tree-paths/solution/tu-jie-er-cha-shu-de-suo-you-lu-jing-by-xiao_ben_z/)
