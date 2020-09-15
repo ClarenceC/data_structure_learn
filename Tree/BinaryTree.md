@@ -662,7 +662,7 @@ class RedBlackTree extends BinarySearchTree {
   }
 }
 
-class RedBBlackNode extends Node {
+class RedBlackNode extends Node {
   constructor(key) {
     super(key)
     this.key = key
@@ -691,6 +691,69 @@ class RedBBlackNode extends Node {
     } else {
       return  this.insertNode(node.right, key) // 否则插入右节点下面的节点里面
     }
+  }
+
+  insert(key: T) {
+    if (this.root == null) {
+      this.root = new RedBlackNode(key)
+      this.root.color = Colors.BLACK // 根节点设为黑色
+    } else {
+      const newNode = this.insertNode(this.root, key)
+      this.fixTreeProperties(newNode) // 验证插入节点后是否满足红黑树属性
+    }
+  }
+
+  fixTreeProperties(node) {
+    while(
+      node && node.parent &&
+      node.parent.color.isRed() &&
+      node.color !== Colors.BLACK
+    ) {
+      let parent = node.parent
+      const grandParent = parent.parent
+      if (grandParent && grandParent.left === parent) {
+        const uncle = grandParent.right
+        if (uncle && uncle.color === Colors.RED) {
+          grandParent.color = Colors.RED
+          parent.color = Colors.BLACK
+          uncle.color = Colors.BLACK
+          node = grandParent
+        } else {
+          // 右节点子树左旋转
+          if (node === parent.right) {
+            this.rotationRR(parent)
+            node = parent
+            parent = node.parent
+          }
+          // 左节点子树右旋转
+          this.rotationLL(grandParent)
+          parent.color = Colors.BLACK
+          grandParent.color = Colors.RED
+          node = parent
+        }
+      } else {
+        const uncle = grandParent.left
+        if (uncle && uncle.color === Colors.RED) {
+          grandParent.color = Colors.RED
+          parent.color = Colors.BLACK
+          uncle.color = Colors.BLACK
+          node = grandParent
+        } else {
+          // 右节点子树左旋转
+          if (node === parent.left) {
+            this.rotationLL(parent)
+            node = parent
+            parent = node.parent
+          }
+          // 左节点子树右旋转
+          this.rotationRR(grandParent)
+          parent.color = Colors.BLACK
+          grandParent.color = Colors.RED
+          node = parent
+        }
+      }
+    }
+    this.root.color = Colors.BLACK
   }
 }
 ```
