@@ -761,8 +761,17 @@ class RedBlackNode extends Node {
 总结:
 
 1. 中序遍历，会从最小值的节点开始遍历整个树，在访问节点时，会先访问左边的子树再访问根节点，再访问右边的子树，而中序遍历会在访问左子树后对节点数据进行逻辑处理。
+
+![](./images/c7b23b11e779559a5b0c53b3549c97ab5dbd49e7a867feed4fb4165b8ef4d495.png)
+
 2. 先序遍历，会先从根节点访问，再访问左子树，最后访问右子树，先序遍历会先对节点数据进行了逻辑处理后，再访问左子树和右子树。
+
+![](./images/d7948dc5e50e70cc84cfbd0e0cf989da40eb96167f03b710392be45b8c415662.png)
+
 3. 后序遍历，会先从左子树访问，后从右子树访问，最后访问根节点，后序遍历会先访问左子树和右子树后再对节点数据进行逻辑处理。
+
+![](./images/bad9b52cb37fc71193e419e886fb808bc7ea55462af53d5dffe6362950a27665.png)
 
 
 - [* 谈谈别的，前、中、后序遍历的区别只有一点](https://leetcode-cn.com/problems/binary-tree-paths/solution/tu-jie-er-cha-shu-de-suo-you-lu-jing-by-xiao_ben_z/)
+- [* JavaScript解：前序遍历二叉树_瓶子君](https://leetcode-cn.com/problems/binary-tree-preorder-traversal/solution/javascriptjie-qian-xu-bian-li-er-cha-shu-by-user77/)
